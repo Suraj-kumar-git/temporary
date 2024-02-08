@@ -1,1 +1,5 @@
-System.out.println("hello world")
+public class Hello{
+main{
+system.out.print(hello world);
+}
+}
