@@ -1,8 +1,9 @@
 //This is a Java program. 
-// The file is saved with .java extension.
+// The file is saved with .txt extension.
 public class Hello{
 public static void main(String args[]){
 system.out.println("\n\nhello world\n\n");
 }
 }
 // This is a inline comment.
+\* This is a mutiline comment.*\
