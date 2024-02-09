@@ -2,7 +2,7 @@
 // The file is saved with .java extension.
 public class Hello{
 public static void main(String args[]){
-system.out.println("hello world");
+system.out.println("\n\nhello world\n\n");
 }
 }
 // This is a inline comment.
