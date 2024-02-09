@@ -1,2 +1,4 @@
 My name is Suraj Kumar. I am 22 years old.
 Hello I am palash agrawal, I live at itarsi MP,India.
+
+hello world code is present in next file
