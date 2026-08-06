@@ -1,0 +1,188 @@
+<!--
+  Choose your cover — one responsive template for mobile and desktop.
+
+  Division of labour:
+    • Bootstrap 5  -> everything structural: grid (row / col-*), flexbox,
+                      spacing, sizing, position and responsive visibility.
+                      All breakpoint behaviour is expressed here in the markup.
+    • Component SCSS -> only brand visuals Bootstrap has no opinion on:
+                      colours, type scale, card radius, accordion transition.
+
+  Breakpoints:
+    < md   phone   — cards stacked full width, footer sticks to the viewport,
+                     scroll-down chip visible.
+    >= md  tablet+ — cards side by side (col-md-6), content centred and width
+                     capped, CTA narrowed, scroll chip hidden (d-md-none).
+-->
+<section class="choose-plan d-flex flex-column min-vh-100">
+
+  <div class="choose-plan__body container-fluid flex-grow-1 px-3 px-md-4 pt-4 pt-md-5 pb-3">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-11 col-lg-9 col-xl-8">
+
+        <header class="mb-4 mb-md-5">
+          <h1 class="choose-plan__title mb-2" [translate]="'choosePlan.title'">Choose your cover</h1>
+          <p class="choose-plan__subtitle mb-0" [translate]="'choosePlan.subtitle'">
+            Select a coverage level, then choose between two insurer offers.
+          </p>
+        </header>
+
+        <!-- Tabs.
+             me-auto spreads the three pills evenly across the row on phones
+             (matching the Figma); me-md-2 collapses them to a tight group on
+             desktop, where the full width would leave them stranded. -->
+        <div class="d-flex flex-nowrap mb-4 mb-md-5"
+             role="tablist"
+             [attr.aria-label]="'choosePlan.title' | translate">
+          <button *ngFor="let tier of tiers; trackBy: trackByTierId"
+                  type="button"
+                  role="tab"
+                  class="choose-plan__tab btn rounded-pill text-nowrap px-3 px-sm-4 py-2 me-auto me-md-2"
+                  [id]="'choose-plan-tab-' + tier.id"
+                  [class.is-active]="tier.id === activeTierId"
+                  [attr.aria-selected]="tier.id === activeTierId"
+                  [attr.aria-controls]="'choose-plan-panel-' + tier.id"
+                  [attr.tabindex]="tier.id === activeTierId ? 0 : -1"
+                  (click)="selectTier(tier.id)"
+                  [translate]="tier.tabLabelKey">Economic</button>
+        </div>
+
+        <div class="choose-plan__panel"
+             role="tabpanel"
+             *ngIf="activeTier as tier"
+             [id]="'choose-plan-panel-' + tier.id"
+             [attr.aria-labelledby]="'choose-plan-tab-' + tier.id">
+
+          <div class="d-flex align-items-baseline justify-content-between gap-3 mb-3">
+            <h2 class="choose-plan__panel-title mb-0" [translate]="tier.tabLabelKey">Economic</h2>
+            <span class="choose-plan__panel-count text-nowrap"
+                  [translate]="'choosePlan.offersAvailable'"
+                  [translateParams]="{ count: offers.length }">2 offers available</span>
+          </div>
+
+          <!-- Stacked below md, two columns from md up.
+               align-items-start keeps an expanded card from stretching its
+               neighbour into a column of empty space. -->
+          <div class="row g-3 g-md-4 align-items-start">
+            <div class="col-12 col-md-6"
+                 *ngFor="let offer of offers; trackBy: trackByOfferId">
+
+              <article class="offer-card p-3 p-md-4"
+                       [class.is-selected]="isSelected(offer)"
+                       [class.is-expanded]="isExpanded(offer)"
+                       role="button"
+                       tabindex="0"
+                       [attr.aria-pressed]="isSelected(offer)"
+                       (click)="selectOffer(offer)"
+                       (keydown.enter)="selectOffer(offer)"
+                       (keydown.space)="selectOffer(offer); $event.preventDefault()">
+
+                <span *ngIf="isLowestPrice(offer)"
+                      class="offer-card__badge badge rounded-pill mb-3"
+                      [translate]="'choosePlan.lowestPrice'">Lowest price</span>
+
+                <div class="d-flex align-items-baseline justify-content-between gap-3">
+                  <span class="offer-card__provider" [translate]="offer.providerNameKey">Aksigorta</span>
+                  <span class="offer-card__price text-nowrap">{{ formatPrice(offer.price) }}</span>
+                </div>
+
+                <div class="d-flex align-items-baseline justify-content-between gap-3 mt-1">
+                  <span class="offer-card__meta" [translate]="offer.packageNameKey">Economic</span>
+                  <span class="offer-card__meta text-nowrap" [translate]="'choosePlan.perYear'">per year</span>
+                </div>
+
+                <!-- Always-visible highlights -->
+                <ul class="list-unstyled d-flex flex-column gap-2 mt-3 mb-0">
+                  <li class="offer-card__item d-flex align-items-start gap-2"
+                      *ngFor="let item of offer.highlights; trackBy: trackByLabelKey">
+                    <ng-container *ngTemplateOutlet="checkIcon"></ng-container>
+                    <span class="flex-grow-1" [translate]="item.labelKey">Collision and theft</span>
+                  </li>
+                </ul>
+
+                <!-- Accordion body -->
+                <div class="offer-card__extra"
+                     [class.is-open]="isExpanded(offer)"
+                     [id]="'offer-coverage-' + offer.id">
+                  <div class="offer-card__extra-inner mt-3 pt-3 border-top">
+                    <p class="offer-card__extra-title mb-2"
+                       [translate]="'choosePlan.fullCoverage'">Full coverage</p>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                      <li class="offer-card__item d-flex align-items-start gap-2"
+                          *ngFor="let item of offer.coverages; trackBy: trackByLabelKey">
+                        <ng-container *ngTemplateOutlet="checkIcon"></ng-container>
+                        <span class="flex-grow-1" [translate]="item.labelKey"></span>
+                        <span class="offer-card__item-value text-end"
+                              *ngIf="item.valueKey"
+                              [translate]="item.valueKey"></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Accordion trigger -->
+                <button type="button"
+                        class="offer-card__toggle btn btn-link p-0 mt-3 text-decoration-underline"
+                        [attr.aria-expanded]="isExpanded(offer)"
+                        [attr.aria-controls]="'offer-coverage-' + offer.id"
+                        (click)="toggleCoverage(offer, $event)"
+                        [translate]="isExpanded(offer) ? 'choosePlan.hideFullCoverage' : 'choosePlan.viewFullCoverage'">
+                  View full coverage
+                </button>
+
+              </article>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky footer -->
+  <footer class="choose-plan__footer position-sticky bottom-0 container-fluid px-3 px-md-4 pb-3 pb-md-4">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+
+        <p class="choose-plan__selected-note text-center mb-3"
+           *ngIf="selectedOffer"
+           [translate]="'choosePlan.providerSelected'"
+           [translateParams]="{ provider: selectedProviderName }">Aksigorta selected</p>
+
+        <div class="position-relative">
+          <!-- Centred on the CTA's top edge via Bootstrap positioning.
+               Phone-only: on desktop the page is short enough not to need it. -->
+          <button type="button"
+                  class="choose-plan__scroll-hint btn rounded-circle position-absolute top-0 start-50 translate-middle d-md-none"
+                  *ngIf="showScrollHint"
+                  (click)="scrollDown($event)"
+                  [attr.aria-label]="'choosePlan.scrollForMore' | translate">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor"
+                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          <button type="button"
+                  class="choose-plan__cta btn rounded-pill w-100 py-3"
+                  [disabled]="!selectedOffer"
+                  (click)="continueWithSelected()"
+                  [translate]="'choosePlan.continueWith'"
+                  [translateParams]="{ provider: selectedProviderName, price: selectedPriceLabel }">
+            Continue with Aksigorta · ₺18,900
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+</section>
+
+<!-- Single source for the tick mark used by both the highlight and detail rows -->
+<ng-template #checkIcon>
+  <svg class="offer-card__check flex-shrink-0" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M4.5 12.5l5 5 10-11" fill="none" stroke="currentColor"
+          stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+</ng-template>

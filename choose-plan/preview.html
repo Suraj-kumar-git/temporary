@@ -1,0 +1,266 @@
+<!doctype html>
+<!--
+  NOT PART OF THE ANGULAR COMPONENT — delete this file when you copy the folder.
+
+  Same markup, same Bootstrap classes, same compiled SCSS as the real component,
+  driven by ~60 lines of vanilla JS so the responsive behaviour can be checked in
+  a browser without a build. Resize the window across 768px to see the mobile /
+  desktop switch.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>choose-plan preview</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+/* ---- choose-plan.component.scss, compiled ---- */
+.choose-plan { background:#fff; color:#0d0d0d; }
+.choose-plan__title { font-size:28px; font-weight:700; line-height:1.2; letter-spacing:-.02em; }
+.choose-plan__subtitle { font-size:16px; line-height:1.45; color:#9a9ba0; }
+
+.choose-plan__tab { border:1px solid #e3e3e5; background:#fff; color:#0d0d0d; font-size:16px; font-weight:500;
+  line-height:1.2; transition:background-color .18s ease,color .18s ease,border-color .18s ease; }
+.choose-plan__tab:hover { background:#fff; border-color:#cdcdd1; color:#0d0d0d; }
+.choose-plan__tab.is-active, .choose-plan__tab.is-active:hover { background:#0a0a0a; border-color:#0a0a0a; color:#fff; font-weight:600; }
+
+.choose-plan__panel-title { font-size:22px; font-weight:700; letter-spacing:-.01em; }
+.choose-plan__panel-count { font-size:15px; color:#9a9ba0; }
+
+.offer-card { position:relative; border:1px solid #ececed; border-radius:20px; background:#f2f2f3; cursor:pointer;
+  transition:border-color .18s ease, box-shadow .18s ease; }
+.offer-card.is-selected { border-color:#4b8ff5; box-shadow:0 0 0 1px #4b8ff5; }
+.offer-card__badge { padding:5px 12px; background:#e4eeff; color:#3d7ee0; font-size:14px; font-weight:500; line-height:1.3; }
+.offer-card__provider { font-size:17px; font-weight:600; letter-spacing:-.01em; }
+.offer-card__price { font-size:22px; font-weight:700; letter-spacing:-.02em; }
+.offer-card__meta { font-size:15px; color:#9a9ba0; }
+.offer-card__item { font-size:15px; line-height:1.35; color:#0d0d0d; }
+.offer-card__check { width:18px; height:18px; margin-top:1px; color:#0d0d0d; }
+.offer-card__item-value { color:#6f7278; }
+.offer-card__extra { max-height:0; opacity:0; overflow:hidden; transition:max-height .32s ease, opacity .22s ease; }
+.offer-card__extra.is-open { max-height:1200px; opacity:1; }
+.offer-card__extra-title { font-size:15px; font-weight:600; }
+.offer-card__toggle { color:#0d0d0d; font-size:16px; font-weight:500; line-height:1.3; text-underline-offset:3px; }
+.offer-card__toggle:hover, .offer-card__toggle:active { color:#0d0d0d; }
+
+.choose-plan__footer { z-index:5; background:#fff; padding-bottom:calc(1rem + env(safe-area-inset-bottom,0px)); }
+.choose-plan__footer::before { content:''; position:absolute; left:0; right:0; bottom:100%; height:28px;
+  background:linear-gradient(to top,#fff,rgba(255,255,255,0)); pointer-events:none; }
+.choose-plan__selected-note { font-size:15px; color:#9a9ba0; }
+.choose-plan__cta { border:0; background:#0a0a0a; color:#fff; font-size:17px; font-weight:600; line-height:1.2; }
+.choose-plan__cta:hover, .choose-plan__cta:active, .choose-plan__cta:focus { background:#0a0a0a; color:#fff; }
+.choose-plan__scroll-hint { z-index:1; display:flex; align-items:center; justify-content:center; width:42px; height:42px;
+  padding:0; border:1px solid rgba(0,0,0,.06); background:#f4f4f5; color:#0d0d0d; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+.choose-plan__scroll-hint:hover { background:#ececee; }
+.choose-plan__scroll-hint svg { width:20px; height:20px; }
+
+@media (max-width:360px) { .choose-plan__title { font-size:25px; } .choose-plan__tab { font-size:15px; } }
+@media (min-width:768px) {
+  .choose-plan__title { font-size:36px; }
+  .choose-plan__subtitle { font-size:17px; max-width:56ch; }
+  .choose-plan__panel-title { font-size:26px; }
+  .offer-card__price { font-size:24px; }
+}
+@media (min-width:1200px) { .choose-plan__title { font-size:40px; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+const T = {
+  "choosePlan.title":"Choose your cover",
+  "choosePlan.subtitle":"Select a coverage level, then choose between two insurer offers.",
+  "choosePlan.lowestPrice":"Lowest price","choosePlan.perYear":"per year",
+  "choosePlan.fullCoverage":"Full coverage",
+  "choosePlan.viewFullCoverage":"View full coverage","choosePlan.hideFullCoverage":"Hide full coverage",
+  "choosePlan.tier.economic":"Economic","choosePlan.tier.standard":"Standard","choosePlan.tier.premium":"Premium",
+  "choosePlan.provider.aksigorta":"Aksigorta","choosePlan.provider.allianz":"Allianz",
+  "choosePlan.coverage.collisionAndTheft":"Collision and theft",
+  "choosePlan.coverage.essentialRoadsideAssistance":"Essential roadside assistance",
+  "choosePlan.coverage.allianzRepairNetwork":"Allianz repair network",
+  "choosePlan.coverage.replacementCar7Days":"Replacement car for 7 days",
+  "choosePlan.coverage.replacementCar15Days":"Replacement car for 15 days",
+  "choosePlan.coverage.imm":"IMM","choosePlan.coverage.keyLoss":"Key loss",
+  "choosePlan.coverage.passengerDeathDisability":"Personal accident – passenger",
+  "choosePlan.coverage.driverDeathDisability":"Personal accident – driver",
+  "choosePlan.coverage.glassExemption":"Glass exemption",
+  "choosePlan.coverage.earthquakeExemption":"Earthquake exemption",
+  "choosePlan.coverage.evCoverages":"EV coverages","choosePlan.coverage.replacementCar":"Replacement car",
+  "choosePlan.coverage.segment":"Segment","choosePlan.coverage.passengerTreatment":"Passenger treatment",
+  "choosePlan.coverage.driverTreatment":"Driver treatment",
+  "choosePlan.coverage.nonPecuniaryCompensation":"Non-pecuniary compensation",
+  "choosePlan.value.included":"Included","choosePlan.value.none":"None",
+  "choosePlan.value.noDeductible":"No deductible","choosePlan.value.deductible5":"5% deductible",
+  "choosePlan.value.days7":"2 × 7 days","choosePlan.value.days15":"2 × 15 days",
+  "choosePlan.value.middle":"Middle","choosePlan.value.upper":"Upper",
+  "choosePlan.value.limit10000":"10,000 TL","choosePlan.value.limit20000":"20,000 TL",
+  "choosePlan.value.limit30000":"30,000 TL","choosePlan.value.limit5000000":"5,000,000 TL",
+  "choosePlan.value.limit10000000":"10,000,000 TL","choosePlan.value.limit25000000":"25,000,000 TL"
+};
+const t = k => T[k] || k;
+
+const ECO = [
+  ['imm','limit5000000'],['keyLoss','limit20000'],['passengerDeathDisability','limit10000'],
+  ['driverDeathDisability','limit10000'],['glassExemption','noDeductible'],
+  ['earthquakeExemption','deductible5'],['evCoverages','included'],['replacementCar','none']
+].map(([l,v]) => ({labelKey:'choosePlan.coverage.'+l, valueKey:'choosePlan.value.'+v}));
+const STD = [
+  ['imm','limit10000000'],['keyLoss','limit20000'],['passengerDeathDisability','limit10000'],
+  ['driverDeathDisability','limit10000'],['glassExemption','noDeductible'],['earthquakeExemption','noDeductible'],
+  ['evCoverages','included'],['replacementCar','days7'],['segment','middle'],
+  ['passengerTreatment','included'],['driverTreatment','included']
+].map(([l,v]) => ({labelKey:'choosePlan.coverage.'+l, valueKey:'choosePlan.value.'+v}));
+const PRE = [
+  ['imm','limit25000000'],['keyLoss','limit30000'],['passengerDeathDisability','limit10000'],
+  ['driverDeathDisability','limit10000'],['glassExemption','noDeductible'],['earthquakeExemption','noDeductible'],
+  ['evCoverages','included'],['replacementCar','days15'],['segment','upper'],
+  ['passengerTreatment','included'],['driverTreatment','included'],['nonPecuniaryCompensation','included']
+].map(([l,v]) => ({labelKey:'choosePlan.coverage.'+l, valueKey:'choosePlan.value.'+v}));
+
+const hl = k => ({labelKey:'choosePlan.coverage.'+k});
+const offer = (id,prov,tier,price,h,cov) => ({
+  id, providerNameKey:'choosePlan.provider.'+prov, packageNameKey:'choosePlan.tier.'+tier,
+  price, highlights:h.map(hl), coverages:cov
+});
+
+const TIERS = [
+  {id:'economic', tabLabelKey:'choosePlan.tier.economic', offers:[
+    offer('economic-aksigorta','aksigorta','economic',18900,['collisionAndTheft','essentialRoadsideAssistance'],ECO),
+    offer('economic-allianz','allianz','economic',19600,['collisionAndTheft','allianzRepairNetwork'],ECO)]},
+  {id:'standard', tabLabelKey:'choosePlan.tier.standard', offers:[
+    offer('standard-aksigorta','aksigorta','standard',24300,['collisionAndTheft','replacementCar7Days'],STD),
+    offer('standard-allianz','allianz','standard',23750,['collisionAndTheft','allianzRepairNetwork'],STD)]},
+  {id:'premium', tabLabelKey:'choosePlan.tier.premium', offers:[
+    offer('premium-aksigorta','aksigorta','premium',31400,['collisionAndTheft','replacementCar15Days'],PRE),
+    offer('premium-allianz','allianz','premium',32900,['collisionAndTheft','allianzRepairNetwork'],PRE)]}
+];
+
+let activeTierId='economic', expandedOfferId=null, selectionByTier={}, showScrollHint=false;
+
+const CHECK = '<svg class="offer-card__check flex-shrink-0" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const fmt = p => '₺' + p.toLocaleString('en-US');
+const tier = () => TIERS.find(x => x.id === activeTierId);
+const offers = () => tier().offers;
+const cheapest = () => offers().reduce((a,b) => (!a || b.price < a.price ? b : a), null);
+const selected = () => offers().find(o => o.id === selectionByTier[activeTierId]) || cheapest();
+const isLowest = o => offers().length > 1 && offers().every(x => x.id === o.id || x.price > o.price);
+
+const row = i => `<li class="offer-card__item d-flex align-items-start gap-2">${CHECK}
+  <span class="flex-grow-1">${t(i.labelKey)}</span>
+  ${i.valueKey ? `<span class="offer-card__item-value text-end">${t(i.valueKey)}</span>` : ''}</li>`;
+
+function render(){
+  const sel = selected();
+  document.getElementById('root').innerHTML = `
+<section class="choose-plan d-flex flex-column min-vh-100">
+  <div class="choose-plan__body container-fluid flex-grow-1 px-3 px-md-4 pt-4 pt-md-5 pb-3">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-11 col-lg-9 col-xl-8">
+
+        <header class="mb-4 mb-md-5">
+          <h1 class="choose-plan__title mb-2">${t('choosePlan.title')}</h1>
+          <p class="choose-plan__subtitle mb-0">${t('choosePlan.subtitle')}</p>
+        </header>
+
+        <div class="d-flex flex-nowrap mb-4 mb-md-5" role="tablist">
+          ${TIERS.map(x => `<button type="button" role="tab" data-tier="${x.id}"
+            class="choose-plan__tab btn rounded-pill text-nowrap px-3 px-sm-4 py-2 me-auto me-md-2${x.id===activeTierId?' is-active':''}"
+            >${t(x.tabLabelKey)}</button>`).join('')}
+        </div>
+
+        <div class="choose-plan__panel" role="tabpanel">
+          <div class="d-flex align-items-baseline justify-content-between gap-3 mb-3">
+            <h2 class="choose-plan__panel-title mb-0">${t(tier().tabLabelKey)}</h2>
+            <span class="choose-plan__panel-count text-nowrap">${offers().length} offers available</span>
+          </div>
+
+          <div class="row g-3 g-md-4 align-items-start">
+          ${offers().map(o => `
+            <div class="col-12 col-md-6">
+              <article class="offer-card p-3 p-md-4${sel && sel.id===o.id ? ' is-selected' : ''}" data-offer="${o.id}">
+                ${isLowest(o) ? `<span class="offer-card__badge badge rounded-pill mb-3">${t('choosePlan.lowestPrice')}</span>` : ''}
+                <div class="d-flex align-items-baseline justify-content-between gap-3">
+                  <span class="offer-card__provider">${t(o.providerNameKey)}</span>
+                  <span class="offer-card__price text-nowrap">${fmt(o.price)}</span>
+                </div>
+                <div class="d-flex align-items-baseline justify-content-between gap-3 mt-1">
+                  <span class="offer-card__meta">${t(o.packageNameKey)}</span>
+                  <span class="offer-card__meta text-nowrap">${t('choosePlan.perYear')}</span>
+                </div>
+                <ul class="list-unstyled d-flex flex-column gap-2 mt-3 mb-0">${o.highlights.map(row).join('')}</ul>
+                <div class="offer-card__extra${expandedOfferId===o.id?' is-open':''}">
+                  <div class="offer-card__extra-inner mt-3 pt-3 border-top">
+                    <p class="offer-card__extra-title mb-2">${t('choosePlan.fullCoverage')}</p>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">${o.coverages.map(row).join('')}</ul>
+                  </div>
+                </div>
+                <button type="button" data-toggle="${o.id}"
+                  class="offer-card__toggle btn btn-link p-0 mt-3 text-decoration-underline"
+                  >${t(expandedOfferId===o.id ? 'choosePlan.hideFullCoverage' : 'choosePlan.viewFullCoverage')}</button>
+              </article>
+            </div>`).join('')}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="choose-plan__footer position-sticky bottom-0 container-fluid px-3 px-md-4 pb-3 pb-md-4">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <p class="choose-plan__selected-note text-center mb-3">${t(sel.providerNameKey)} selected</p>
+        <div class="position-relative">
+          ${showScrollHint ? `<button type="button" data-scroll
+            class="choose-plan__scroll-hint btn rounded-circle position-absolute top-0 start-50 translate-middle d-md-none">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>` : ''}
+          <button type="button" data-cta class="choose-plan__cta btn rounded-pill w-100 py-3"
+            >Continue with ${t(sel.providerNameKey)} · ${fmt(sel.price)}</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+</section>`;
+}
+
+function refreshHint(){
+  setTimeout(() => {
+    const doc = document.documentElement;
+    const next = doc.scrollHeight - (window.scrollY + window.innerHeight) > 24;
+    if (next !== showScrollHint) { showScrollHint = next; render(); }
+  });
+}
+
+document.addEventListener('click', e => {
+  const tab = e.target.closest('[data-tier]');
+  if (tab) { activeTierId = tab.dataset.tier; expandedOfferId = null; render(); return refreshHint(); }
+
+  const tog = e.target.closest('[data-toggle]');
+  if (tog) { e.stopPropagation();
+    expandedOfferId = expandedOfferId === tog.dataset.toggle ? null : tog.dataset.toggle;
+    render(); return refreshHint(); }
+
+  if (e.target.closest('[data-scroll]')) {
+    return window.scrollBy({ top: Math.round(window.innerHeight * 0.7), behavior: 'smooth' });
+  }
+
+  if (e.target.closest('[data-cta]')) {
+    const s = selected();
+    return alert(`planChosen -> ${t(s.providerNameKey)} / ${t(s.packageNameKey)} / ${fmt(s.price)}`);
+  }
+
+  const card = e.target.closest('[data-offer]');
+  if (card) { selectionByTier[activeTierId] = card.dataset.offer; render(); }
+});
+
+window.addEventListener('scroll', refreshHint, { passive: true });
+window.addEventListener('resize', refreshHint, { passive: true });
+render();
+refreshHint();
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "choosePlan": {
+    "title": "Teminatınızı seçin",
+    "subtitle": "Bir teminat seviyesi seçin, ardından iki sigorta şirketi teklifinden birini tercih edin.",
+    "offersAvailable": "{{count}} teklif mevcut",
+    "lowestPrice": "En uygun fiyat",
+    "perYear": "yıllık",
+    "fullCoverage": "Tüm teminatlar",
+    "viewFullCoverage": "Tüm teminatları gör",
+    "hideFullCoverage": "Teminatları gizle",
+    "providerSelected": "{{provider}} seçildi",
+    "continueWith": "{{provider}} ile devam et · {{price}}",
+    "scrollForMore": "Devamı için kaydırın",
+
+    "tier": {
+      "economic": "Ekonomik",
+      "standard": "Standart",
+      "premium": "Premium"
+    },
+
+    "provider": {
+      "aksigorta": "Aksigorta",
+      "allianz": "Allianz"
+    },
+
+    "coverage": {
+      "collisionAndTheft": "Çarpma ve hırsızlık",
+      "essentialRoadsideAssistance": "Temel yol yardımı",
+      "allianzRepairNetwork": "Allianz anlaşmalı servis ağı",
+      "replacementCar7Days": "7 gün ikame araç",
+      "replacementCar15Days": "15 gün ikame araç",
+      "imm": "İMM",
+      "keyLoss": "Anahtar kaybı",
+      "passengerDeathDisability": "Ferdi kaza – yolcu",
+      "driverDeathDisability": "Ferdi kaza – sürücü",
+      "glassExemption": "Cam muafiyeti",
+      "earthquakeExemption": "Deprem muafiyeti",
+      "evCoverages": "Elektrikli araç teminatları",
+      "replacementCar": "İkame araç",
+      "segment": "Segment",
+      "passengerTreatment": "Yolcu tedavi",
+      "driverTreatment": "Sürücü tedavi",
+      "nonPecuniaryCompensation": "Manevi tazminat"
+    },
+
+    "value": {
+      "included": "Dahil",
+      "none": "Yok",
+      "noDeductible": "Muafiyetsiz",
+      "deductible5": "%5 muafiyet",
+      "days7": "2 × 7 gün",
+      "days15": "2 × 15 gün",
+      "middle": "Orta",
+      "upper": "Üst",
+      "limit10000": "10.000 TL",
+      "limit20000": "20.000 TL",
+      "limit30000": "30.000 TL",
+      "limit5000000": "5.000.000 TL",
+      "limit10000000": "10.000.000 TL",
+      "limit25000000": "25.000.000 TL"
+    }
+  }
+}
