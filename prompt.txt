@@ -1,0 +1,338 @@
+You are an senior Frontend engineer on Angular. You have to design separate page for Desktop & Mobile View. You dont have to work on Desktop view for now but first you have to create only the mobile view. Attached is a pdf of the frontend screen. 
+Please follow the attached image.pdf for the below requirement:
+1. There will be three tabs on the page: Economic, Standard, & Premium
+2. Each tab will contain 2 offer cards from 2 different Providers.
+3. Each card will have the price, provider name, the package, 2 coverages and a button which will act like an accordion. Clicking on the accordion button will open a all the coverages on the package card. This will act like a toggle: When the accordion button of second card is opened the first one will shrink to its original form.
+4. There will be a Lowest price mark on the card which contains lesser price among the two.
+5. The same will follow for the other 2 tabs: Standard & Premium.
+6. The other texts & button also we will have like it is in image.pdf
+7. The price will be dynamically read from the service file(I have this.)
+
+The coverages on each card will be read from a translation file which I have in json format. So I will have en.json & tr.json already in my project so just use the translate in html (e.g.: <div [translate]="'productOffer.title'">) so that I can simply put the keys & values in the json format and it starts reading the converages from the file.
+
+Component name: choose-plan
+You are free to choose the logic how we will show different screens in desktop & mobile view for the same route.
+Dont assume anything and ask me for any additional thing you want to add. Tell me what approach you have followed for different screens. The style should match the style in the image.pdf.
+You are free to divide it into subtasks so that we can go step by step.
+
+
+
+<!-- Slide 1 -->
+                                <!-- <div class="carousel-item" [ngClass]=" {active : activeIndex === 0}">
+                                    <div class="slide">
+                                        <div *ngIf="!isSimpleLoaderEnable"
+                                            (click)="selectProduct(keyLossTypes.Economic)"
+                                            class="product-inactive mb-3">
+                                            <div class="mt-10 ctr-aln" *ngIf="!isSimpleLoading">
+                                                <h4 *ngIf="lang === 'en'" class="price-heading">{{ keyLossTypeCookieInfo.economic | number}} TL</h4>
+                                                <h4 *ngIf="lang === 'tr'" class="price-heading">{{ keyLossTypeCookieInfo.economic | number:'1.2-2':'tr'}} TL</h4>
+                                                <span class="per-time" [translate]="'offer.year'">/Year</span>
+                                            </div>
+                                            <div class="full-width">
+                                                <p class="product-name" [translate]="'offer.economic'">Economic</p>
+                                            </div>
+                                            <div *ngIf="!isSimpleLoading"
+                                                [ngClass]="lang === 'en' ? 'des-v-h' : 'des-v-h h-tr'">
+                                                <div class="text-left">
+                                                    <div class="right-mark ml"></div>
+                                                    <span class="ml-30" [translate]="'offer.imm'">IMM</span>
+                                                    <span class="mr-10" [translate]="'offer.limit_5000000'"></span>
+                                                </div>
+                                                <div class="text-left">
+                                                    <div class="right-mark ml"></div>
+                                                    <span class="ml-30" [translate]="'offer.keyLoss'">Key Loss</span>
+                                                    <span class="mr-10" [translate]="'offer.limit_20000'"></span>
+                                                </div>
+                                                <div class="text-left">
+                                                    <div class="right-mark ml"></div>
+                                                    <span class="ml-30"
+                                                        [translate]="'offer.passengerDeathDisability'">Personal Accident - Passenger</span>
+                                                    <span class="mr-10" [translate]="'offer.limit_10000'"></span>
+                                                </div>
+                                                <div class="text-left">
+                                                    <div class="right-mark ml"></div>
+                                                    <span class="ml-30" [translate]="'offer.driverDeathDisability'">Personal Accident - Driver</span>
+                                                    <span class="mr-10" [translate]="'offer.limit_10000'"></span>
+                                                </div>
+                                                <div class="text-left">
+                                                    <div class="right-mark ml"></div>
+                                                    <span class="ml-30" [translate]="'offer.glassExemption'">Glass Exemption</span>
+                                                    <span class="mr-10" [translate]="'productOffer.glassexempt'">No deductible</span>
+                                                </div>
+                                                <div class="text-left">
+                                                    <div class="right-mark ml"></div>
+                                                    <span class="ml-30" [translate]="'offer.earthquakeExemption'">Earthquake Exemption</span>
+                                                    <span class="mr-10" [translate]="'productOffer.earthnoExempt'">5% Deductible</span>
+                                                </div>
+                                                <div class="text-left">
+                                                    <div class="right-mark ml"></div>
+                                                    <span class="ml-30" [translate]="'evCover.EVCoverages'">EV Coverages</span>
+                                                    <span class="mr-10" [translate]="'productOffer.included'">Included</span>
+                                                </div>
+                                                <div class="text-left">
+                                                    <div class="right-mark ml"></div>
+                                                    <span *ngIf="lang === 'en'" class="ml-30" [translate]="'offer.assistanceType'">Standard Replacement Car</span>
+                                                    <span *ngIf="lang === 'tr'" class="ml-30" [translate]="'offer.assistanceType_7'">Standard Replacement Car</span>
+                                                    <span class="mr-10" [translate]="'offer.assitanceValue_none'">None</span>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="isSimpleLoading" class="err-v-h">
+                                                <p class="info-text" [translate]="'offer.clickRefresh'"></p>
+                                                <p class="info-text" [translate]="'offer.sorryMsg'"></p>
+                                            </div>
+                                            <div class="half-width text-center">
+                                                <button *ngIf="!isSimpleLoading" type="button"
+                                                    class="btn plan-btn point-div button-click-animation"
+                                                    [translate]="'offer.choosePlan'"
+                                                    (click)="choosePlan(keyLossTypes.Economic)">
+                                                    Choose Plan
+                                                </button>
+                                                <button *ngIf="isSimpleLoading" type="button"
+                                                    class="btn plan-btn point-div button-click-animation"
+                                                    [translate]="'button.refresh'"
+                                                    (click)="refreshQuote(keyLossTypes.Economic)">
+                                                    Refresh
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="isSimpleLoaderEnable" class="col-sm-3 cur-ac broonz-plan">
+                                            <div class="loading-container">
+                                                <app-svg-loader></app-svg-loader>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            
+                                <!-- Slide 2 -->
+                                <!-- <div class="carousel-item" [ngClass]=" {active : activeIndex === 1}">
+                                    <div class="slide">
+                                        <div *ngIf="!isSmartLoaderEnable"
+                                            (click)="selectProduct(keyLossTypes.Standard)"
+                                            class="product-active">
+                                            <div class="label-box">
+                                                <p class="recommended-text" [translate]="'offer.recommended'">
+                                                    Recommended
+                                                </p>
+                                            </div>
+                                            <div class="mt-10 ctr-aln" *ngIf="!isSmartLoading">
+                                                <h3 *ngIf="lang === 'en'" class="price-heading text-left">{{ keyLossTypeCookieInfo.standard | number}} TL</h3>
+                                                <h3 *ngIf="lang === 'tr'" class="price-heading text-left">{{ keyLossTypeCookieInfo.standard | number:'1.2-2':'tr'}} TL</h3>
+                                                <span class="per-time" [translate]="'offer.year'">/Year</span>
+                                            </div>
+                                            <div class="full-width">
+                                                <p class="product-name" [translate]="'offer.standard'">Standard</p>
+                                            </div>
+                                            <div *ngIf="!isSmartLoading"
+                                                [ngClass]="lang === 'en' ? 'des-v-h' : 'des-v-h h-tr'">
+                                                <div>
+                                                    <div class="text-left grey-active">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.imm'">IMM</span>
+                                                        <span class="mr-10" [translate]="'offer.limit_10000000'"></span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.keyLoss'">Key Loss</span>
+                                                        <span class="mr-10" [translate]="'offer.limit_20000'"></span>
+                                                    </div>
+                                                    <div class="text-left grey-active">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30"
+                                                            [translate]="'offer.passengerDeathDisability'">Personal Accident - Passenger</span>
+                                                        <span class="mr-10" [translate]="'offer.limit_10000'">10000</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30"
+                                                            [translate]="'offer.driverDeathDisability'">Personal Accident - Driver</span>
+                                                        <span class="mr-10" [translate]="'offer.limit_10000'">10000</span>
+                                                    </div>
+                                                    <div class="text-left grey-active">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.glassExemption'">Glass Exemption</span>
+                                                        <span class="mr-10" [translate]="'productOffer.glassexempt'">No deductible</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.earthquakeExemption'">Earthquake Exemption</span>
+                                                        <span class="mr-10" [translate]="'productOffer.earthexempt'">earthnoExempt</span>
+                                                    </div>
+                                                    <div class="text-left grey-active">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'evCover.EVCoverages'">EV Coverages</span>
+                                                        <span class="mr-10" [translate]="'productOffer.included'">Included</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span *ngIf="lang === 'en'" class="ml-30" [translate]="'offer.assistanceType'">Standard Replacement Car</span>
+                                                        <span *ngIf="lang === 'tr'" class="ml-30" [translate]="'offer.assistanceType_7'">Standard Replacement Car</span>
+                                                        <span class="mr-10" [translate]="'offer.assitanceValue_7'">2*7</span>
+                                                    </div>
+                                                    <div class="text-left grey-active">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.segmentNone'">Segment</span>
+                                                        <span class="mr-10" [translate]="'productOffer.middle'">Middle</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30"
+                                                            [translate]="'offer.passengerTreatment'">Passenger
+                                                            Treatment</span>
+                                                        <span class="mr-10" [translate]="'productOffer.included'">Included</span>
+                                                    </div>
+                                                    <div class="text-left grey-active">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.driverTreatment'">Driver
+                                                            Treatment</span>
+                                                        <span class="mr-10" [translate]="'productOffer.included'">Included</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="isSmartLoading" class="err-v-h">
+                                                <p class="info-text" [translate]="'offer.clickRefresh'"></p>
+                                                <p class="info-text" [translate]="'offer.sorryMsg'"></p>
+                                            </div>
+                                            <div class="half-width text-center">
+                                                <button *ngIf="!isSmartLoading" type="button"
+                                                    class="btn plan-btn point-div button-click-animation"
+                                                    [translate]="'offer.choosePlan'"
+                                                    (click)="choosePlan(keyLossTypes.Standard)">
+                                                    Choose Plan
+                                                </button>
+                                                <button *ngIf="isSmartLoading" type="button"
+                                                    class="btn plan-btn point-div button-click-animation"
+                                                    [translate]="'button.refresh'"
+                                                    (click)="refreshQuote(keyLossTypes.Standard)">
+                                                    Refresh
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="isSmartLoaderEnable" class="col-sm-3 cur-ac advanced-plan">
+                                            <div class="loading-container">
+                                                <app-svg-loader></app-svg-loader>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                
+                                <!-- Slide 3 -->
+                                <!-- <div class="carousel-item" [ngClass]=" {active : activeIndex === 2}">
+                                    <div class="slide">
+                                        <div *ngIf="!isStarLoaderEnable"
+                                            (click)="selectProduct(keyLossTypes.Super)"
+                                            class="product-inactive mb-3">
+                                            <div class="mt-10 ctr-aln" *ngIf="!isStarLoading">
+                                                <h3 *ngIf="lang === 'en'" class="price-heading text-left">{{ keyLossTypeCookieInfo.super | number}} TL</h3>
+                                                <h3 *ngIf="lang === 'tr'" class="price-heading text-left">{{ keyLossTypeCookieInfo.super | number:'1.2-2':'tr'}} TL</h3>
+                                                <span class="per-time" [translate]="'offer.year'">/Year</span>
+                                            </div>
+                                            <div class="full-width">
+                                                <p class="product-name" [translate]="'offer.super'">Super</p>
+                                            </div>
+                                            <div *ngIf="!isStarLoading"
+                                                [ngClass]="lang === 'en' ? 'des-v-h' : 'des-v-h h-tr'">
+                                                <div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.imm'">IMM</span>
+                                                        <span class="mr-10" [translate]="'offer.limit_25000000'"></span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.keyLoss'">Key Loss</span>
+                                                        <span class="mr-10" [translate]="'offer.limit_30000'">Limit: 30000</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30"
+                                                            [translate]="'offer.passengerDeathDisability'">Personal Accident - Passenger</span>
+                                                        <span class="mr-10" [translate]="'offer.limit_10000'">10000</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30"
+                                                            [translate]="'offer.driverDeathDisability'">Personal Accident - Driver</span>
+                                                        <span class="mr-10" [translate]="'offer.limit_10000'">10000</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.glassExemption'">Glass Exemption</span>
+                                                        <span class="mr-10" [translate]="'productOffer.glassexempt'">No deductible</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.earthquakeExemption'">Earthquake Exemption</span>
+                                                        <span class="mr-10" [translate]="'productOffer.earthexempt'">No deductible</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'evCover.EVCoverages'">EV Coverages</span>
+                                                        <span class="mr-10" [translate]="'productOffer.included'">Included</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span *ngIf="lang === 'en'" class="ml-30" [translate]="'offer.assistanceType'">Standard Replacement Car</span>
+                                                        <span *ngIf="lang === 'tr'" class="ml-30" [translate]="'offer.assistanceType_15'">Standard Replacement Car</span>
+                                                        <span class="mr-10" [translate]="'offer.assitanceValue_15'">2*15</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.segmentNone'">Segment</span>
+                                                        <span class="mr-10" [translate]="'productOffer.upper'">Upper</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30"
+                                                            [translate]="'offer.passengerTreatment'">Passenger
+                                                            Treatment</span>
+                                                        <span class="mr-10" [translate]="'productOffer.included'">Included</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30" [translate]="'offer.driverTreatment'">Driver
+                                                            Treatment</span>
+                                                        <span class="mr-10" [translate]="'productOffer.included'">Included</span>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="right-mark ml"></div>
+                                                        <span class="ml-30"
+                                                            [translate]="'offer.nonPecuniaryCompensation'">Non Pecuniary
+                                                            Compensation</span>
+                                                        <span class="mr-10" [translate]="'productOffer.included'">Included</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="isStarLoading" class="err-v-h">
+                                                <p class="info-text" [translate]="'offer.clickRefresh'"></p>
+                                                <p class="info-text" [translate]="'offer.sorryMsg'"></p>
+                                            </div>
+                                            <div class="half-width text-center">
+                                                <button *ngIf="!isStarLoading" type="button"
+                                                    class="btn plan-btn point-div button-click-animation"
+                                                    [translate]="'offer.choosePlan'"
+                                                    (click)="choosePlan(keyLossTypes.Super)">
+                                                    Choose Plan
+                                                </button>
+                                                <button *ngIf="isStarLoading" type="button"
+                                                    class="btn plan-btn point-div button-click-animation"
+                                                    [translate]="'button.refresh'"
+                                                    (click)="refreshQuote(keyLossTypes.Super)">
+                                                    Refresh
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="isStarLoaderEnable" class="col-sm-3 cur-ac premium-plan">
+                                            <div class="loading-container">
+                                                <app-svg-loader></app-svg-loader>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            
+                                <!-- Dot Indicators -->
+                                <!-- <div class="carousel-dots text-center mt-3">
+                                    <button class="dot" [class.active]="activeIndex === 0" (click)="setActiveSlide(0)"></button>
+                                    <button class="dot" [class.active]="activeIndex === 1" (click)="setActiveSlide(1)"></button>
+                                    <button class="dot" [class.active]="activeIndex === 2" (click)="setActiveSlide(2)"></button>
+                                </div> -->
+                                <app-choose-plan-mobile *ngIf="isMobile"></app-choose-plan-mobile>
